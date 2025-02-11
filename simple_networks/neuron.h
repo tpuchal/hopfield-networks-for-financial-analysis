@@ -36,6 +36,22 @@ void print_network(struct Network* n) {
     }
 }
 
+int** calculate_weight_matrix(int* pattern, int patternSize) {
+    int newWeightMatrix[patternSize][patternSize];
+    for(int i = 0; i < patternSize; i++) {
+        for(int j = 0; j < patternSize; j++) {
+            if(i == j) {
+                newWeightMatrix[i][j] = 0;
+            }
+            else {
+                newWeightMatrix[i][j] = pattern[i] * pattern[j];
+            }
+        }
+    }
+
+    return newWeightMatrix;
+}
+
 
 //allocate memory, put first pattern to store
 void initiate_network(struct Network* n, int numberOfNeurons, int* initialState, int initialStateSize) {
@@ -49,18 +65,14 @@ void initiate_network(struct Network* n, int numberOfNeurons, int* initialState,
     //define number of neurons in the network
     n->numberOfNeurons = numberOfNeurons;
 
-    //allocate memory for weights
+    //allocate memory for weights and Neurons
     n->weights = (int**) malloc(n->numberOfNeurons * sizeof(int*));
+    n->neurons = (struct Neuron*) malloc(numberOfNeurons * sizeof(struct Neuron));
+
     for(int i = 0; i < n->numberOfNeurons; i++) {
         n->weights[i] = (int*) malloc(n->numberOfNeurons * sizeof(int));
-    }
-
-    n->neurons = (struct Neuron*) malloc(numberOfNeurons * sizeof(struct Neuron));
-    for(int i = 0; i < numberOfNeurons; i++) {
         n->neurons[i].state = initialState[i];
-    }
 
-    for(int i = 0; i < n->numberOfNeurons; i++) {
         for(int j = 0; j < n->numberOfNeurons; j++) {
             if(i == j) {
                 n->weights[i][j] = 0;
@@ -78,7 +90,7 @@ void update_network(struct Network* n){
         for(int i = 0 ; i < n->numberOfNeurons ; i++) {
             weightedSum += n->neurons[i].state * n->weights[j][i];
         }
-        n->neurons[j].state = weightedSum >= 0 ? 1 : -1;
+        n->neurons[j].state = (weightedSum >= 0) ? 1 : -1;
     }
 }
 
@@ -117,6 +129,15 @@ void converge_network(struct Network* n) {
         prevState[i] = n->neurons[i].state;
         }
     } while(!isStateEqual(prevState,n));
+}
+
+void add_new_pattern(struct Network* n, int* newPattern, int newPatternSize) {
+    if(newPatternSize != n->numberOfNeurons)
+        return;
+    
+    //calculate new weight matrix
+    int** newWeights = calculate_weight_matrix(newPattern,newPatternSize);
+    
 }
 
 void free_network(struct Network* n) {
