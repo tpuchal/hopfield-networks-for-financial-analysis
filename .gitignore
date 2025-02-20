@@ -2,3 +2,9 @@ simple_networks/main.dSYM/Contents/Info.plist
 simple_networks/main.dSYM/Contents/Resources/DWARF/main
 simple_networks/main
 simple_networks_new/program
+modern_networks/main
+modern_networks/modern_hopfield.o
+.vscode/launch.json
+.vscode/tasks.json
+modern_networks/main.o
+*.o
